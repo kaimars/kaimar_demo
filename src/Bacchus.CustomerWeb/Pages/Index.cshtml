@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Home page";
 }
@@ -7,4 +8,12 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>@Model.SelectedCategory Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @foreach(var item in Model.ProductCategories)
+    {
+        <a asp-page="./Index" asp-route-category="@item">@item</a>        
+    }
+    @foreach(var item in Model.Auctions)
+    {
+        @item.ProductName<a asp-page="./Bid" asp-route-productId="@item.ProductId">Tee pakkumine</a><br/>
+    }
 </div>
