@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Bacchus.Core.Entities;
 using Bacchus.Core.Interfaces;
 using Bacchus.Infrastructure.Data;
@@ -29,6 +30,11 @@ namespace Bacchus.CustomerWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BidContext>(c =>
+            {
+                c.UseSqlite("Data Source=Data/bid.db");
+                //c.UseSqlServer(Configuration.GetConnectionString("CatalogConnection"));
+            });
             services.AddScoped(typeof(IAsyncRepository<Bid>), typeof(BidRepository));
             services.AddScoped(typeof(IListRepository<Auction>), typeof(AuctionRepository));
             services.AddScoped(typeof(IAuctionService), typeof(AuctionService));

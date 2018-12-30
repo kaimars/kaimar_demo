@@ -82,13 +82,11 @@ namespace Bacchus.Core.Services
             if (auction.BiddingEndDate < DateTime.Now){
                 throw new BusinessRuleViolatedException("Bidding time for this auction is over.");
             }
-            var result = new Bid(username, productId, DateTime.Now, price);
-            // TODO: save result
-            return result;
+            return await _bidRepository.AddAsync(new Bid(username, productId, DateTime.Now, price));
         }
-        public Task<IReadOnlyList<Bid>> ListAllBidsAsync()
+        public async Task<IReadOnlyList<Bid>> ListAllBidsAsync()
         {
-            throw new NotImplementedException();
+            return await _bidRepository.ListAllAsync();
         }
        
     }
