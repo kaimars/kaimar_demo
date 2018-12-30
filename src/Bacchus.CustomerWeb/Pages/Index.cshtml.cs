@@ -22,7 +22,7 @@ namespace Bacchus.CustomerWeb.Pages
         }
         public async Task OnGet(string category)
         {
-            this.SelectedCategory = category;
+            this.SelectedCategory = category == null ? "" : category;
             this.ProductCategories = await _auctionService.ListAvailableProductCategoriesAsync();
             this.Auctions = await _auctionService.ListRunningAuctionsAsync(category);
         }

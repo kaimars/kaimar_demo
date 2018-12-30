@@ -14,6 +14,13 @@ namespace Bacchus.Core.Interfaces
         /// <param name="productCategoryFilter">Optional filter for Auction.ProductCategory</param>
         /// <returns>List of found Auctions, may be empty.</returns>
         Task<IReadOnlyList<Auction>> ListRunningAuctionsAsync(String productCategoryFilter=null);
+        
+        /// <summary>
+        /// Returns Auction referenced by productId.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<Auction> GetAuctionByProductIdAsync(Guid productId);
 
         /// <summary>
         /// Returns all distinct product categories which have currently running auctions.
@@ -22,7 +29,7 @@ namespace Bacchus.Core.Interfaces
         /// <returns>List of Auction.ProductCategory, may be empty.</returns>
         Task<IReadOnlyList<String>> ListAvailableProductCategoriesAsync();
 
-        Task<Bid> AddBidAsync(Guid productId, string username);
+        Task<Bid> AddBidAsync(Guid productId, string username, decimal price);
         Task<IReadOnlyList<Bid>> ListAllBidsAsync();
    }
 }

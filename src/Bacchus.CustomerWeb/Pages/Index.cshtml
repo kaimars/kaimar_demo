@@ -1,19 +1,38 @@
 ﻿@page
 @model IndexModel
+@using Bacchus.CustomerWeb.Extensions
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Home page";
 }
+@functions{ 
+  public string GetClassForProductCategory(String productCategory) 
+  {
+        return productCategory == Model.SelectedCategory ? "btn btn-primary mr-1" : "btn btn-outline-primary mr-1" ;
+  }
+}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>@Model.SelectedCategory Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    @foreach(var item in Model.ProductCategories)
-    {
-        <a asp-page="./Index" asp-route-category="@item">@item</a>        
-    }
+<div class="container">
+    <div class="row justify-content-center mb-3">
+        <a asp-page="./Index" class="@GetClassForProductCategory(String.Empty)">All auctions</a>
+        @foreach(var item in Model.ProductCategories)
+        {
+            <a asp-page="./Index" asp-route-category="@item" class="@GetClassForProductCategory(item)">@item</a>
+        }
+    </div>
+    <div class="row">
     @foreach(var item in Model.Auctions)
     {
-        @item.ProductName<a asp-page="./Bid" asp-route-productId="@item.ProductId">Tee pakkumine</a><br/>
+        <div class="col-sm-4">
+        <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@item.ProductName</h5>
+            <p class="card-text">@item.ProductDescription</p>
+            <a asp-page="./Bid" asp-route-productId="@item.ProductId" class="btn btn-primary">Place bid</a>
+            @((item.BiddingEndDate - DateTime.Now).ToUiString()) remaining
+        </div>
+        </div>
+        </div>
     }
+    </div>
 </div>

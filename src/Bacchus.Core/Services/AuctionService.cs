@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bacchus.Core.Interfaces;
 using Bacchus.Core.Entities;
-using System.Runtime.Caching;
+using Bacchus.Core.Exceptions;
 
 namespace Bacchus.Core.Services
 {
@@ -22,13 +22,17 @@ namespace Bacchus.Core.Services
             _bidRepository = bidRepository;
         }
 
-        private async Task<IReadOnlyList<Auction>> ListRunningAuctionsAsync()
+        /// <summary>
+        /// Returns Auction referenced by productId.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        public async Task<Auction> GetAuctionByProductIdAsync(Guid productId)
         {
-            ObjectCache cache = MemoryCache.Default;
-            var result = cache["ListRunningAuctionsAsync"] as IReadOnlyList<Auction>;
+            var auctions = await this.ListRunningAuctionsAsync();
+            var result = auctions.SingleOrDefault(x => x.ProductId == productId);
             if (result == null){
-                result = await _auctionRepository.ListAllAsync();
-                cache.Set("ListRunningAuctionsAsync", result, DateTime.Now.AddMinutes(1));
+                throw new AuctionNotFoundException(productId);
             }
             return result;
         }
@@ -40,7 +44,7 @@ namespace Bacchus.Core.Services
         /// <returns>List of Auction.ProductCategory, may be empty.</returns>
         public async Task<IReadOnlyList<String>> ListAvailableProductCategoriesAsync()
         {
-            var auctions = await this.ListRunningAuctionsAsync();
+            var auctions = await _auctionRepository.ListAllAsync();
             return auctions
                 .Select(x => x.ProductCategory)
                 .Distinct()
@@ -57,7 +61,7 @@ namespace Bacchus.Core.Services
         /// <returns>List of found Auctions, may be empty.</returns>
         public async Task<IReadOnlyList<Auction>> ListRunningAuctionsAsync(String productCategoryFilter=null)
         {
-            var auctions = await this.ListRunningAuctionsAsync();
+            var auctions = await _auctionRepository.ListAllAsync();
             return auctions
                 .Where(x => (String.IsNullOrEmpty(productCategoryFilter) || (x.ProductCategory == productCategoryFilter))
                     && (x.BiddingEndDate > DateTime.Now))
@@ -65,9 +69,22 @@ namespace Bacchus.Core.Services
                 .ToList()
                 .AsReadOnly();
         }
-        public Task<Bid> AddBidAsync(Guid productId, string username)
+        public async Task<Bid> AddBidAsync(Guid productId, string username, decimal price)
         {
-            throw new NotImplementedException();
+            var auction = await this.GetAuctionByProductIdAsync(productId);
+            if (String.IsNullOrWhiteSpace(username))
+            {
+                throw new BusinessRuleViolatedException("Missing username");
+            }
+            if (price <= 0){
+                throw new BusinessRuleViolatedException("Price must be positive number");
+            }
+            if (auction.BiddingEndDate < DateTime.Now){
+                throw new BusinessRuleViolatedException("Bidding time for this auction is over.");
+            }
+            var result = new Bid(username, productId, DateTime.Now, price);
+            // TODO: save result
+            return result;
         }
         public Task<IReadOnlyList<Bid>> ListAllBidsAsync()
         {
