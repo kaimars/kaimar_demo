@@ -11,15 +11,21 @@ using System.Runtime.Caching;
 
 namespace Bacchus.Infrastructure.Data
 {
-    public class AuctionRepository: IListRepository<Auction>
+    public class AuctionRepository : IListRepository<Auction>
     {
         private const String CACHE_KEY = "AuctionRepository.Auctions";
 
-        // TODO: in real application make cache settings configuarable
-        private const int CACHE_DURATION_SECONDS = 60;
 
         // TODO: in real application make URL configuarable
-        private const string ServiceAddress = "http://uptime-auction-api.azurewebsites.net/api/Auction";
+        //private const string ServiceAddress = ;
+        private readonly String _serviceAddress;
+        private readonly int _cacheDurationSeconds;
+
+        public AuctionRepository(String serviceAddress, int cacheDurationSeconds=60)
+        {
+            this._serviceAddress = serviceAddress;
+            this._cacheDurationSeconds = cacheDurationSeconds;
+        }
 
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
@@ -34,19 +40,20 @@ namespace Bacchus.Infrastructure.Data
         {
             using (var httpClient = new WebClient())
             {
-                var jsonData = httpClient.DownloadString(ServiceAddress);
+                var jsonData = httpClient.DownloadString(_serviceAddress);
                 var result = JsonConvert.DeserializeObject<Auction[]>(jsonData, _jsonSettings);
                 return Task.FromResult<IReadOnlyList<Auction>>(new List<Auction>(result).AsReadOnly());
             }
         }
-        
+
         public async Task<IReadOnlyList<Auction>> ListAllAsync()
         {
             ObjectCache cache = MemoryCache.Default;
             var result = cache[CACHE_KEY] as IReadOnlyList<Auction>;
-            if (result == null){
+            if (result == null)
+            {
                 result = await this.LoadAuctions();
-                cache.Set(CACHE_KEY, result, DateTime.Now.AddSeconds(CACHE_DURATION_SECONDS));
+                cache.Set(CACHE_KEY, result, DateTime.Now.AddSeconds(_cacheDurationSeconds));
             }
             return result;
         }

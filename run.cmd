@@ -1,0 +1,1 @@
+dotnet run --project src\Bacchus.CustomerWeb\Bacchus.CustomerWeb.csproj

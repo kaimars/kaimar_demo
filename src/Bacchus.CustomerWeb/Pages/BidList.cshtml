@@ -1,0 +1,24 @@
+﻿@page
+@model Bacchus.CustomerWeb.Pages.BidListModel
+<h3>All registered bids</h3>
+<table class="table table-sm table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>CreatedOn</th>
+            <th>Username</th>
+            <th>Price</th>
+            <th>ProductId</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var bid in Model.Bids)
+{
+        <tr>
+            <td>@bid.CreatedOn</td>
+            <td>@bid.Username</td>
+            <td>@bid.Price</td>
+            <td>@bid.ProductId</td>
+        </tr>
+}        
+    </tbody>
+</table>

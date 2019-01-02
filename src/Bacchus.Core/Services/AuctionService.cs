@@ -69,6 +69,14 @@ namespace Bacchus.Core.Services
                 .ToList()
                 .AsReadOnly();
         }
+        
+        /// <summary>
+        /// Registers new Bid based on given parameters.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="username"></param>
+        /// <param name="price"></param>
+        /// <returns>Created Bid entity or ApplicationException in case of business rules are not followed.</returns>
         public async Task<Bid> AddBidAsync(Guid productId, string username, decimal price)
         {
             var auction = await this.GetAuctionByProductIdAsync(productId);
@@ -84,6 +92,11 @@ namespace Bacchus.Core.Services
             }
             return await _bidRepository.AddAsync(new Bid(username, productId, DateTime.Now, price));
         }
+        
+        /// <summary>
+        /// Returns all Bids.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IReadOnlyList<Bid>> ListAllBidsAsync()
         {
             return await _bidRepository.ListAllAsync();

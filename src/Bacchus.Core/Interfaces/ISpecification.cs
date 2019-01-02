@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 
 namespace Bacchus.Core.Interfaces
 {
+    // Based on  ASP.NET Core 2.1 reference application https://github.com/dotnet-architecture/eShopOnWeb
     public interface ISpecification<T>
     {
         Expression<Func<T, bool>> Criteria { get; }

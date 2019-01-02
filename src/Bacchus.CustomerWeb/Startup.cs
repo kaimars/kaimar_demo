@@ -32,11 +32,12 @@ namespace Bacchus.CustomerWeb
         {
             services.AddDbContext<BidContext>(c =>
             {
-                c.UseSqlite("Data Source=Data/bid.db");
-                //c.UseSqlServer(Configuration.GetConnectionString("CatalogConnection"));
+                c.UseSqlite(Configuration.GetConnectionString("BidConnection"));
             });
             services.AddScoped(typeof(IAsyncRepository<Bid>), typeof(BidRepository));
-            services.AddScoped(typeof(IListRepository<Auction>), typeof(AuctionRepository));
+            //services.AddScoped<IListRepository<Auction>>(typeof(IListRepository<Auction>), typeof(AuctionRepository));
+            services.AddScoped<IListRepository<Auction>>(c => 
+                new AuctionRepository(Configuration["AuctionRepository.ServiceAddress"], 60));
             services.AddScoped(typeof(IAuctionService), typeof(AuctionService));
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -64,7 +65,7 @@ namespace Bacchus.CustomerWeb
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

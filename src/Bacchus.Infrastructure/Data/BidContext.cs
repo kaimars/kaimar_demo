@@ -11,10 +11,5 @@ namespace Bacchus.Infrastructure.Data
         public BidContext(DbContextOptions<BidContext> options) : base(options)
         {
         }
-        
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     optionsBuilder.UseSqlite("Data Source=bid.db");
-        // }        
     }
 }
