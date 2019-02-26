@@ -35,7 +35,6 @@ namespace Bacchus.CustomerWeb
                 c.UseSqlite(Configuration.GetConnectionString("BidConnection"));
             });
             services.AddScoped(typeof(IAsyncRepository<Bid>), typeof(BidRepository));
-            //services.AddScoped<IListRepository<Auction>>(typeof(IListRepository<Auction>), typeof(AuctionRepository));
             services.AddScoped<IListRepository<Auction>>(c => 
                 new AuctionRepository(Configuration["AuctionRepository.ServiceAddress"], 60));
             services.AddScoped(typeof(IAuctionService), typeof(AuctionService));

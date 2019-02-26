@@ -14,10 +14,6 @@ namespace Bacchus.Infrastructure.Data
     public class AuctionRepository : IListRepository<Auction>
     {
         private const String CACHE_KEY = "AuctionRepository.Auctions";
-
-
-        // TODO: in real application make URL configuarable
-        //private const string ServiceAddress = ;
         private readonly String _serviceAddress;
         private readonly int _cacheDurationSeconds;
 

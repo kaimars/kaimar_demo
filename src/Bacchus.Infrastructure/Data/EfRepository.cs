@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Bacchus.Infrastructure.Data
 {
+    // Based on  ASP.NET Core 2.1 reference application https://github.com/dotnet-architecture/eShopOnWeb
+    
     /// <summary>
     /// "There's some repetition here - couldn't we have some the sync methods call the async?"
     /// https://blogs.msdn.microsoft.com/pfxteam/2012/04/13/should-i-expose-synchronous-wrappers-for-asynchronous-methods/

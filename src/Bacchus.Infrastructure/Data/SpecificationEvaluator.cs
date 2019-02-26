@@ -7,6 +7,7 @@ using Bacchus.Core.Interfaces;
 
 namespace Bacchus.Infrastructure.Data
 {
+    // Based on  ASP.NET Core 2.1 reference application https://github.com/dotnet-architecture/eShopOnWeb
     public class SpecificationEvaluator<T> where T: class
     {
         public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecification<T> specification)
